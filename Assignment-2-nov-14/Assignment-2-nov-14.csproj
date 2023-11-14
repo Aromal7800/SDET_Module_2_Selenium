@@ -3,6 +3,7 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>net7.0</TargetFramework>
+    <RootNamespace>Assignment_2_nov_14</RootNamespace>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
@@ -10,8 +11,6 @@
   <ItemGroup>
     <PackageReference Include="NUnit" Version="3.14.0" />
     <PackageReference Include="Selenium.WebDriver" Version="4.15.0" />
-    <PackageReference Include="Selenium.WebDriver.ChromeDriver" Version="119.0.6045.10500" />
-    <PackageReference Include="Selenium.WebDriver.MSEdgeDriver" Version="119.0.2151.42" />
   </ItemGroup>
 
 </Project>
