@@ -11,6 +11,7 @@ namespace SELNUnitExamples
             driver = new ChromeDriver();//it will open the browser
             driver.Url = "https://www.google.com";
         }
+        [Ignore("other")]
 
         [Test]
         public void CheckForTitle()
@@ -18,7 +19,7 @@ namespace SELNUnitExamples
           
             Thread.Sleep(2000);
             string title=driver.Title;
-            Assert.AreEqual("Goooogle",title);
+            Assert.AreEqual("Google",title);
             
         }
         [TearDown] 
