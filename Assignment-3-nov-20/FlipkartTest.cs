@@ -15,13 +15,13 @@ namespace Assignment_3_nov_20
         {
             DefaultWait<IWebDriver> fluentWait = new DefaultWait<IWebDriver>(driver);
             fluentWait.Timeout = TimeSpan.FromSeconds(5);
-           // fluentWait.PollingInterval = TimeSpan.FromMilliseconds(100);
-           // fluentWait.IgnoreExceptionTypes(typeof(NoSuchElementException));
+            fluentWait.PollingInterval = TimeSpan.FromMilliseconds(100);
+            fluentWait.IgnoreExceptionTypes(typeof(NoSuchElementException));
             IWebElement webElement = fluentWait.Until(driv => driv.FindElement(By.ClassName("Pke_EE")));
            
             webElement.SendKeys("Laptop");
             webElement.SendKeys(Keys.Enter);
-            IWebElement SelectLap = driver.FindElement(By.XPath("//a[contains(@class,'_1fQZEK')][1]"));
+            IWebElement SelectLap = fluentWait.Until(driv => driv.FindElement(By.XPath("//a[contains(@class,'_1fQZEK')][1]")));
        List<string> lswindow = driver.WindowHandles.ToList();
             SelectLap.Click();
             driver.SwitchTo().Window(lswindow[0]);

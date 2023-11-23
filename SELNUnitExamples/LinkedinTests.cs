@@ -4,6 +4,7 @@ using SeleniumExtras.WaitHelpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -12,7 +13,7 @@ namespace SELNUnitExamples
     [TestFixture]
     internal class LinkedinTests :CoreCodes
     {
-        [Test]
+        //[Test]
         [Author("Aromal", "Aromal7800@gmail.com")]
         [Description("check for valid Login")]
         [Category("Reggretion Testing")]
@@ -90,7 +91,7 @@ namespace SELNUnitExamples
             Thread.Sleep(3000);
         }
         */
-       // [Test]
+        [Test]
         [Author("AAA", "AAA@gmail.com")]
         [Category("Smoke Testing"), Description("LoginTestInvlid")]
         [TestCaseSource(nameof(InvalidLoginData))]
@@ -102,10 +103,18 @@ namespace SELNUnitExamples
             fluentWait.IgnoreExceptionTypes(typeof(NoSuchElementException));
             IWebElement emailInput = fluentWait.Until(driv => driv.FindElement(By.Id("session_key")));
             IWebElement passwordInput = fluentWait.Until(driv => driv.FindElement(By.Id("session_password")));
-            emailInput.SendKeys(email); passwordInput.SendKeys(password);
+            emailInput.SendKeys(email);
+            passwordInput.SendKeys(password);
+            TakeScreenShot();
+            IJavaScriptExecutor js = (IJavaScriptExecutor)driver;
+            //js.ExecuteScript("arguments[0].scrollIntoView(true);", driver.FindElement(By.XPath("//button[@data-id=\"sign-in-form__submit-btn\"]")));
+          
+            Thread.Sleep(3000);
+            js.ExecuteScript("arguments[0].click();", driver.FindElement(By.XPath("//button[@data-id=\"sign-in-form__submit-btn\"]")));
+            Thread.Sleep(3000);
             ClearForm(emailInput);
             ClearForm(passwordInput);
-            Thread.Sleep(3000);
+           
         }
         static object[] InvalidLoginData()
         {
@@ -117,6 +126,16 @@ namespace SELNUnitExamples
                 new object[] {"tyu@xyz.com","1234"}
 
             };
+           
+        }
+        public void TakeScreenShot()
+        {
+           ITakesScreenshot ISS=(ITakesScreenshot)driver;
+            Screenshot ss=ISS.GetScreenshot();
+            string currdir = Directory.GetParent(@"../../../").FullName;
+            string filepath = currdir + "/Screenshots/SS_" + DateTime.Now.ToString("yyyyMMdd_HHmmss")+".png";
+            ss.SaveAsFile(filepath);
+            
         }
     }
 }
