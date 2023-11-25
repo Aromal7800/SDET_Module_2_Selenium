@@ -19,7 +19,7 @@ namespace Assignment_nov_23.TestScripts
                 driver.Navigate().GoToUrl("https://www.naaptol.com/");
             }
             var selectProductPage=naaptolHomePage.SearechProduct("eyewear");
-            Assert.True(selectProductPage.);
+            
             Thread.Sleep(3000);
             var selectedProductPage = selectProductPage.SelectFifthItem();
             Thread.Sleep(3000);
