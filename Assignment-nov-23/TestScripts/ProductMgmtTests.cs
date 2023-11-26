@@ -1,4 +1,5 @@
 ﻿using Assignment_nov_23.PageObjects;
+using BunnyCart.Utilities;
 using OpenQA.Selenium.Interactions;
 using System;
 using System.Collections.Generic;
@@ -8,9 +9,9 @@ using System.Threading.Tasks;
 
 namespace Assignment_nov_23.TestScripts
 {
-    internal class ProductMgmtTests:CoreCodes
+    internal class ProductMgmtTests : CoreCodes
     {
-        [Test , Order(1)]
+        [Test, Order(1)]
         public void SearchTest()
         {
             var naaptolHomePage = new NaaptolHomePage(driver);
@@ -18,20 +19,38 @@ namespace Assignment_nov_23.TestScripts
             {
                 driver.Navigate().GoToUrl("https://www.naaptol.com/");
             }
-            var selectProductPage=naaptolHomePage.SearechProduct("eyewear");
-            
-            Thread.Sleep(3000);
-            var selectedProductPage = selectProductPage.SelectFifthItem();
-            Thread.Sleep(3000);
-           
-            selectedProductPage.SelectSize();
-            Thread.Sleep(3000);
-            selectedProductPage.AddToCart();
-            Thread.Sleep(3000);
-            selectedProductPage.Close();
-            Thread.Sleep(3000);
+            string? currDir = Directory.GetParent(@"../../../")?.FullName;
+            string? excelFilePath = currDir + "/TestData/InputData.xlsx";
+            string? sheetName = "SearchInput";
+
+            List<SearchData> excelDataList = ExcelUtils.ReadExcelData(excelFilePath, sheetName);
+
+            foreach (var excelData in excelDataList)
+            {
+
+                string? SerchText = excelData?.SearchText;
 
 
+
+                var selectProductPage = naaptolHomePage.SearechProduct(SerchText);
+
+
+                Thread.Sleep(3000);
+                var selectedProductPage = selectProductPage.SelectFifthItem();
+                Thread.Sleep(3000);
+
+                selectedProductPage.SelectSize();
+                Thread.Sleep(3000);
+                selectedProductPage.AddToCart();
+                Thread.Sleep(3000);
+                selectedProductPage.IncreseQantityMethod("2");
+                Thread.Sleep(3000);
+                selectedProductPage.RemoveBtn();
+                selectedProductPage.Close();
+                Thread.Sleep(3000);
+
+
+            }
         }
     }
 }
