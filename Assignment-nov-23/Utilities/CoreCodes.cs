@@ -1,4 +1,6 @@
-﻿using OpenQA.Selenium;
+﻿using AventStack.ExtentReports.Reporter;
+using AventStack.ExtentReports;
+using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Edge;
 using System;
@@ -13,7 +15,10 @@ namespace Assignment_nov_23
     public class CoreCodes
     {
         public Dictionary<string, string>? properties;
-       public  IWebDriver driver;
+        public IWebDriver driver;
+        public ExtentReports extent;
+        ExtentSparkReporter sparkReporter;
+        public ExtentTest test;
 
         public void ReadConfigSettings()
         {
@@ -32,16 +37,29 @@ namespace Assignment_nov_23
                 }
             }
         }
-        [OneTimeSetUp] public void InitializeBrowser() 
+        public static void ScrollIntoView(IWebDriver driver, IWebElement element)
         {
+            IJavaScriptExecutor js = (IJavaScriptExecutor)driver;
+            js.ExecuteScript("arguments[0].scrollIntoView(true);", element);
+        }
+
+        [OneTimeSetUp]
+        public void InitializeBrowser()
+        {
+
+            String currdir = Directory.GetParent(@"../../../").FullName;
+            extent = new ExtentReports();
+            sparkReporter = new ExtentSparkReporter(currdir + "/ExtentReports/extent-report"
+                + DateTime.Now.ToString("yyyyMMdd_HHmmss") + ".html");
+            extent.AttachReporter(sparkReporter);
             ReadConfigSettings();
             if (properties["browser"].ToLower() == "chrome")
             {
                 driver = new ChromeDriver();
             }
-            else if(properties["browser"].ToLower() == "edge")
+            else if (properties["browser"].ToLower() == "edge")
             {
-                driver=new EdgeDriver();
+                driver = new EdgeDriver();
             }
             driver.Url = properties["baseUrl"];
             driver.Manage().Window.Maximize();
@@ -64,9 +82,11 @@ namespace Assignment_nov_23
                 return false;
             }
         }
-        [OneTimeTearDown] public void Cleanup() 
+        [OneTimeTearDown]
+        public void Cleanup()
         {
-           driver.Quit();
+            driver.Quit();
+            extent.Flush();
         }
 
     }

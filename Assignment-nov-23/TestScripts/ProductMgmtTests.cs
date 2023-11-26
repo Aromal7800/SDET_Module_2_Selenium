@@ -1,5 +1,6 @@
 ﻿using Assignment_nov_23.PageObjects;
 using BunnyCart.Utilities;
+using OpenQA.Selenium;
 using OpenQA.Selenium.Interactions;
 using System;
 using System.Collections.Generic;
@@ -36,8 +37,23 @@ namespace Assignment_nov_23.TestScripts
 
 
                 Thread.Sleep(3000);
+                try
+                {
+                    Assert.That(driver.Url.Contains("eyewear"));
+                    test = extent.CreateTest("Search Test - Pass");
+                    test.Pass("Search eyewear success");
+                    Console.WriteLine("ERCP");
+                }
+                catch (AssertionException)
+                {
+                    test = extent.CreateTest("Search Test - Fail");
+                    test.Fail("Search eyewear failed");
+                    Console.WriteLine("ERCF");
+                }
+
                 var selectedProductPage = selectProductPage.SelectFifthItem();
                 Thread.Sleep(3000);
+
 
                 selectedProductPage.SelectSize();
                 Thread.Sleep(3000);
