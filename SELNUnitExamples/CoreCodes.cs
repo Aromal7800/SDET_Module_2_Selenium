@@ -46,6 +46,16 @@ namespace SELNUnitExamples
             driver.Url = properties["baseUrl"];
             driver.Manage().Window.Maximize();
         }
+
+        public void TakeScreenShot()
+        {
+            ITakesScreenshot ISS = (ITakesScreenshot)driver;
+            Screenshot ss = ISS.GetScreenshot();
+            string currdir = Directory.GetParent(@"../../../").FullName;
+            string filepath = currdir + "/Screenshots/SS_" + DateTime.Now.ToString("yyyyMMdd_HHmmss") + ".png";
+            ss.SaveAsFile(filepath);
+
+        }
         public bool CheckLinkStatus(string url)
         {
             try

@@ -81,6 +81,11 @@ namespace BunnyCart
                 return false;
             }
         }
+       // protected void LogTestResult(string testName,string result,string errorMessage = null)
+        //{
+            
+
+       // }
         [OneTimeTearDown] public void Cleanup() 
         {
            driver.Quit();

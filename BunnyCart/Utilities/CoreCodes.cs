@@ -9,6 +9,8 @@ using System.Linq;
 using System.Reflection.Metadata.Ecma335;
 using System.Text;
 using System.Threading.Tasks;
+//using AventStack.ExtentReports.Model;
+using Serilog;
 
 namespace BunnyCart
 {
@@ -16,7 +18,7 @@ namespace BunnyCart
     {
         public Dictionary<string, string>? properties;
        public  IWebDriver driver;
-        public ExtentReports extent;
+       public ExtentReports extent;
         ExtentSparkReporter sparkReporter;
         public ExtentTest test;
 
@@ -36,6 +38,15 @@ namespace BunnyCart
                     properties[key] = value;
                 }
             }
+        }
+        public void TakeScreenShot()
+        {
+            ITakesScreenshot ISS = (ITakesScreenshot)driver;
+            Screenshot ss = ISS.GetScreenshot();
+            string currdir = Directory.GetParent(@"../../../").FullName;
+            string filepath = currdir + "/Screenshots/SS_" + DateTime.Now.ToString("yyyyMMdd_HHmmss") + ".png";
+            ss.SaveAsFile(filepath);
+
         }
         public static void ScrollIntoView(IWebDriver driver, IWebElement element)
         {
@@ -79,6 +90,22 @@ namespace BunnyCart
             catch
             {
                 return false;
+            }
+        }
+        protected void LogTestResult(string testName, string result, string errorMessage = null)
+        {
+            Log.Information(result);
+
+            test = extent.CreateTest(testName);
+
+            if (errorMessage == null)
+            {
+                test.Pass(result);
+            }
+            else
+            {
+                Log.Error($"Test failed for {testName}. \n Exception: \n {errorMessage}");
+                test.Fail(result);
             }
         }
         [OneTimeTearDown] public void Cleanup() 

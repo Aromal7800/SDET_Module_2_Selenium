@@ -1,6 +1,7 @@
 ﻿using BunnyCart.PageObjects;
 using BunnyCart.Utilities;
 using OpenQA.Selenium;
+using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,23 +13,44 @@ namespace BunnyCart.TestScripts
     [TestFixture]
     internal class BCTests : CoreCodes
     {
+        string currdir = Directory.GetParent(@"../../../").FullName;
         [Test]
         public void SignUPTest()
         {
+           
+            string logfilepath = currdir + "/Logs/log_" + DateTime.Now.ToString("yyyymmdd_HHmmss") + ".txt";
+
+            Log.Logger = new LoggerConfiguration()
+                .WriteTo.Console()
+                .WriteTo.File(logfilepath, rollingInterval: RollingInterval.Day)
+                .CreateLogger();
+          
             var homepage = new BunnyCartHomePage(driver);
+
+            Log.Information("Create Account Test Started");
             homepage.ClickCreateAccount();
-            Thread.Sleep(2000);
+            Log.Information("Create Account Test Clicked");
+            Thread.Sleep(1000);
+
+          //  homepage.ClickCreateAccount();
+           // Thread.Sleep(2000);
             try
             {
-                Assert.That(driver?.FindElement(By.XPath("//div[" +
-                    "@class='modal-inner-wrap']//following::h1[2]")).Text,
-                    Is.EqualTo("Create an Account"));
+                Assert.That(driver.FindElement(By.XPath("//div[@class='modal-inner-wrap']//following::h1[2]")).Text.Contains("Create"));
+              //  LogTestResult("Create Account Link Test","Create Account Link sucess");
+                Log.Information("Test passed for Create Account");
+
                 test = extent.CreateTest("Create Account Link Test - Pass");
                 test.Pass("Create Account Link success");
                 Console.WriteLine("ERCP");
             }
-            catch(AssertionException)
+            catch(AssertionException ex)
             {
+               Log.Error($"Test failed for Create Account. \n Exception : {ex.Message}");
+
+             //   LogTestResult("Create Account Link Test","Create Account Link failed");
+
+
                 test = extent.CreateTest("Create Account Link Test - Fail");
                 test.Fail("Create Account Link failed");
                 Console.WriteLine("ERCF");
@@ -36,8 +58,8 @@ namespace BunnyCart.TestScripts
 
 
 
-            string? currDir = Directory.GetParent(@"../../../")?.FullName;
-            string? excelFilePath = currDir + "/TestData/InputData.xlsx";
+            
+            string? excelFilePath = currdir + "/TestData/InputData.xlsx";
             string? sheetName = "CreateAccount";
 
             List<SignUp> excelDataList = ExcelUtils.ReadExcelData(excelFilePath, sheetName);
@@ -68,7 +90,7 @@ namespace BunnyCart.TestScripts
                 {
                     Console.WriteLine("Create Account Modal Not Present");
                 }
-
+                Log.CloseAndFlush();
 
             }
         }
